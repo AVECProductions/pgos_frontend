@@ -5,27 +5,27 @@
     <!-- Quick Stats -->
     <div class="columns is-multiline">
       <div class="column is-3">
-        <div class="box has-background-grey has-text-white">
-          <h2 class="subtitle has-text-white mb-2">Active Goals</h2>
-          <p class="title has-text-white">{{ stats.activeGoals || 0 }}</p>
+        <div class="box">
+          <h2 class="subtitle mb-2">Active Goals</h2>
+          <p class="title">{{ stats.activeGoals || 0 }}</p>
         </div>
       </div>
       <div class="column is-3">
-        <div class="box has-background-grey has-text-white">
-          <h2 class="subtitle has-text-white mb-2">KPIs Tracked</h2>
-          <p class="title has-text-white">{{ stats.kpisTracked || 0 }}</p>
+        <div class="box">
+          <h2 class="subtitle mb-2">KPIs Tracked</h2>
+          <p class="title">{{ stats.kpisTracked || 0 }}</p>
         </div>
       </div>
       <div class="column is-3">
-        <div class="box has-background-grey has-text-white">
-          <h2 class="subtitle has-text-white mb-2">Journal Entries</h2>
-          <p class="title has-text-white">{{ stats.journalEntries || 0 }}</p>
+        <div class="box">
+          <h2 class="subtitle mb-2">Journal Entries</h2>
+          <p class="title">{{ stats.journalEntries || 0 }}</p>
         </div>
       </div>
       <div class="column is-3">
-        <div class="box has-background-grey has-text-white">
-          <h2 class="subtitle has-text-white mb-2">RICH Items</h2>
-          <p class="title has-text-white">{{ stats.richItems || 0 }}</p>
+        <div class="box">
+          <h2 class="subtitle mb-2">RICH Items</h2>
+          <p class="title">{{ stats.richItems || 0 }}</p>
         </div>
       </div>
     </div>
