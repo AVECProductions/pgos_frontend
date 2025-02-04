@@ -200,4 +200,106 @@ body {
   background-color: var(--button-background) !important;
   color: var(--text) !important;
   border-color: var(--border) !important;
+}
+
+/* Add smooth transitions */
+.box, .card, .button, .input, .textarea {
+  transition: all 0.3s ease-in-out !important;
+}
+
+/* Hover effects for boxes */
+.box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Gradient backgrounds for stat cards */
+.box.has-background-primary {
+  background: linear-gradient(135deg, var(--stat-card-1) 0%, rgba(26, 74, 74, 0.8) 100%) !important;
+}
+
+.box.has-background-info {
+  background: linear-gradient(135deg, var(--stat-card-2) 0%, rgba(26, 58, 90, 0.8) 100%) !important;
+}
+
+.box.has-background-success {
+  background: linear-gradient(135deg, var(--stat-card-3) 0%, rgba(26, 74, 58, 0.8) 100%) !important;
+}
+
+.box.has-background-warning {
+  background: linear-gradient(135deg, var(--stat-card-4) 0%, rgba(74, 58, 26, 0.8) 100%) !important;
+}
+
+/* Glowing effect for primary buttons */
+.button.is-primary {
+  position: relative;
+  overflow: hidden;
+}
+
+.button.is-primary:after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(45deg);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) rotate(45deg); }
+}
+
+/* Pulse animation for important elements */
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--link);
+}
+
+/* Loading skeleton animation */
+.skeleton {
+  background: linear-gradient(90deg, 
+    var(--card-background) 25%, 
+    var(--border) 50%, 
+    var(--card-background) 75%
+  );
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 } 

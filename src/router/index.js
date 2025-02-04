@@ -11,6 +11,7 @@ import JournalView from '@/views/JournalView.vue'
 import JournalEntryForm from '@/views/JournalEntryForm.vue'
 import KPITrackerView from '@/views/KPITrackerView.vue'
 import RegisterView from '@/views/RegisterView.vue'
+import ManageKPIsView from '@/views/ManageKPIsView.vue'
 
 const routes = [
   {
@@ -64,8 +65,14 @@ const routes = [
     redirect: '/kpis/track'
   },
   {
+    path: '/kpis/manage',
+    name: 'manage-kpis',
+    component: ManageKPIsView,
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/kpis/track',
-    name: 'kpi-tracker',
+    name: 'track-kpis',
     component: KPITrackerView,
     meta: { requiresAuth: true }
   },

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="header-container">
+    <div class="header-container" data-aos="fade-down">
       <h1 class="title mb-0">Journal</h1>
       <button class="button" @click="createEntry">
         <span class="icon">
@@ -11,7 +11,13 @@
     </div>
 
     <div class="journal-list">
-      <div class="box" v-for="entry in entries" :key="entry.id">
+      <div 
+        v-for="(entry, index) in entries" 
+        :key="entry.id"
+        class="box"
+        data-aos="fade-up"
+        :data-aos-delay="index * 100"
+      >
         <div class="journal-container">
           <div class="journal-info">
             <h3 class="title is-5 mb-2">{{ formatDate(entry.created_at) }}</h3>
@@ -120,6 +126,27 @@ export default {
 .journal-info {
   flex: 1;
   min-width: 0;
+  position: relative;
+}
+
+.journal-info::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.journal-info:hover::after {
+  opacity: 1;
 }
 
 .journal-actions {
@@ -138,5 +165,22 @@ export default {
     justify-content: flex-end;
     margin-top: 1rem;
   }
+}
+
+.box {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.journal-actions button {
+  transition: all 0.3s ease;
+}
+
+.journal-actions button:hover {
+  transform: scale(1.05);
 }
 </style> 

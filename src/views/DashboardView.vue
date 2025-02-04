@@ -5,25 +5,25 @@
     <!-- Quick Stats -->
     <div class="columns is-multiline">
       <div class="column is-3">
-        <div class="box has-background-primary has-text-white">
+        <div class="box has-background-grey has-text-white">
           <h2 class="subtitle has-text-white mb-2">Active Goals</h2>
           <p class="title has-text-white">{{ stats.activeGoals || 0 }}</p>
         </div>
       </div>
       <div class="column is-3">
-        <div class="box has-background-info has-text-white">
+        <div class="box has-background-grey has-text-white">
           <h2 class="subtitle has-text-white mb-2">KPIs Tracked</h2>
           <p class="title has-text-white">{{ stats.kpisTracked || 0 }}</p>
         </div>
       </div>
       <div class="column is-3">
-        <div class="box has-background-success has-text-white">
+        <div class="box has-background-grey has-text-white">
           <h2 class="subtitle has-text-white mb-2">Journal Entries</h2>
           <p class="title has-text-white">{{ stats.journalEntries || 0 }}</p>
         </div>
       </div>
       <div class="column is-3">
-        <div class="box has-background-warning has-text-white">
+        <div class="box has-background-grey has-text-white">
           <h2 class="subtitle has-text-white mb-2">RICH Items</h2>
           <p class="title has-text-white">{{ stats.richItems || 0 }}</p>
         </div>
@@ -31,38 +31,33 @@
     </div>
 
     <!-- Recent Activity -->
-    <div class="columns">
-      <div class="column is-8">
-        <div class="box">
-          <h2 class="title is-4">Recent Activity</h2>
-          <div v-if="recentActivity.length" class="timeline">
-            <div v-for="activity in recentActivity" :key="activity.id" class="timeline-item">
-              <div class="timeline-marker"></div>
-              <div class="timeline-content">
-                <p class="heading">{{ formatDate(activity.date) }}</p>
-                <p>{{ activity.description }}</p>
-              </div>
+    <div class="dashboard-grid">
+      <div class="recent-activity box">
+        <h2 class="subtitle">Recent Activity</h2>
+        <div class="activity-list">
+          <div v-for="activity in recentActivity" :key="activity.id" class="activity-item">
+            <span class="activity-dot"></span>
+            <div class="activity-content">
+              <div class="activity-date">{{ formatDate(activity.date) }}</div>
+              <div class="activity-description">{{ activity.description }}</div>
             </div>
           </div>
-          <p v-else>No recent activity</p>
         </div>
       </div>
 
       <!-- Quick Actions -->
-      <div class="column is-4">
-        <div class="box">
-          <h2 class="title is-4">Quick Actions</h2>
-          <div class="buttons">
-            <router-link to="/goals" class="button is-fullwidth">
-              Add New Goal
-            </router-link>
-            <router-link to="/journal/new" class="button is-fullwidth">
-              Write Journal Entry
-            </router-link>
-            <router-link to="/kpis/track" class="button is-fullwidth">
-              Track KPIs
-            </router-link>
-          </div>
+      <div class="quick-actions box">
+        <h2 class="subtitle">Quick Actions</h2>
+        <div class="actions-list">
+          <router-link to="/goals/new" class="button is-fullwidth">
+            Add New Goal
+          </router-link>
+          <router-link to="/journal/new" class="button is-fullwidth">
+            Write Journal Entry
+          </router-link>
+          <router-link to="/kpis" class="button is-fullwidth">
+            Track KPIs
+          </router-link>
         </div>
       </div>
     </div>
@@ -111,28 +106,91 @@ export default {
 </script>
 
 <style scoped>
-.timeline {
-  margin-top: 1rem;
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
 }
 
-.timeline-item {
-  padding-bottom: 1rem;
-  position: relative;
+.recent-activity,
+.quick-actions {
+  display: flex;
+  flex-direction: column;
+  height: 300px;  /* Fixed height for both sections */
 }
 
-.timeline-marker {
-  position: absolute;
-  background: #dbdbdb;
-  border: 2px solid #dbdbdb;
-  border-radius: 100%;
-  height: 12px;
-  width: 12px;
-  left: -20px;
-  top: 6px;
+.activity-list {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
 }
 
-.timeline-content {
-  padding-left: 1rem;
-  border-left: 2px solid #dbdbdb;
+.actions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+  justify-content: space-between;
+}
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--link);
+  border-radius: 50%;
+  margin-top: 0.5rem;
+}
+
+.activity-content {
+  flex: 1;
+}
+
+.activity-date {
+  font-size: 0.9rem;
+  color: var(--text);
+  opacity: 0.8;
+}
+
+.activity-description {
+  margin-top: 0.25rem;
+}
+
+/* Ensure buttons have consistent spacing */
+.button.is-fullwidth {
+  margin-bottom: 0;
+}
+
+/* Add scrollbar styling */
+.activity-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.activity-list::-webkit-scrollbar-track {
+  background: var(--card-background);
+}
+
+.activity-list::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+/* Mobile responsiveness */
+@media screen and (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style> 
