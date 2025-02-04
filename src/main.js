@@ -8,7 +8,7 @@ console.log('Initializing Vue app...')
 
 // Configure axios defaults
 axios.defaults.baseURL = process.env.NODE_ENV === 'production' 
-  ? 'https://your-railway-backend-url.railway.app'  // Replace with your Railway URL
+  ? 'https://pgos-production.up.railway.app'  // Replace with your Railway URL
   : 'http://localhost:8000'
 
 // Add request interceptor
