@@ -16,7 +16,10 @@
       <!-- Yearly Goals -->
       <div class="column is-12">
         <h2 class="title is-4">Yearly Goals ({{ currentYear }})</h2>
-        <div class="box" v-for="goal in yearlyGoals" :key="goal.id">
+        <div v-if="yearlyGoals.length === 0" class="box empty-state">
+          <p class="has-text-centered has-text-grey">No yearly goals created yet</p>
+        </div>
+        <div v-else class="box" v-for="goal in yearlyGoals" :key="goal.id">
           <div class="goal-container">
             <div class="goal-info">
               <h3 class="title is-5 mb-2">{{ goal.life_sector }}</h3>
@@ -37,7 +40,10 @@
       <!-- Quarterly Goals -->
       <div class="column is-12">
         <h2 class="title is-4">Q{{ currentQuarter }} Goals</h2>
-        <div class="box" v-for="goal in quarterlyGoals" :key="goal.id">
+        <div v-if="quarterlyGoals.length === 0" class="box empty-state">
+          <p class="has-text-centered has-text-grey">No quarterly goals created yet</p>
+        </div>
+        <div v-else class="box" v-for="goal in quarterlyGoals" :key="goal.id">
           <div class="goal-container">
             <div class="goal-info">
               <h3 class="title is-5 mb-2">{{ goal.life_sector }}</h3>
@@ -457,5 +463,17 @@ export default {
     padding: 0.5rem;
     font-size: 0.9rem;
   }
+}
+
+.empty-state {
+  padding: 2rem;
+  background-color: var(--card-background);
+  border: 1px dashed var(--border);
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 1.1rem;
+  opacity: 0.8;
 }
 </style> 
