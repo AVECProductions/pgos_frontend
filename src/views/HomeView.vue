@@ -4,18 +4,14 @@
       <DashboardView />
     </div>
     <div v-else class="welcome-section">
-      <div class="hero is-primary">
+      <div class="hero is-fullheight-with-navbar">
         <div class="hero-body">
-          <div class="container">
-            <h1 class="title">Welcome to PGOS</h1>
-            <h2 class="subtitle">Personal Goal & Objective System</h2>
-            <div class="buttons">
-              <router-link to="/login" class="button is-light is-medium">
-                Login
-              </router-link>
-              <router-link to="/register" class="button is-light is-outlined is-medium">
-                Register
-              </router-link>
+          <div class="container has-text-centered">
+            <h1 class="title is-1">Welcome to PGOS</h1>
+            <p class="subtitle">Personal Goal & Objective System</p>
+            <div class="buttons is-centered mt-5">
+              <router-link to="/login" class="button">Login</router-link>
+              <router-link to="/register" class="button">Register</router-link>
             </div>
           </div>
         </div>
@@ -49,11 +45,19 @@ export default {
 }
 
 .hero {
-  text-align: center;
+  background-color: var(--card-background);
+  color: var(--text);
 }
 
-.buttons {
-  justify-content: center;
-  margin-top: 2rem;
+.button {
+  background-color: var(--button-background);
+  color: var(--text);
+  border-color: var(--border);
+  min-width: 100px;
+}
+
+.button:hover {
+  background-color: var(--link);
+  color: var(--text-strong);
 }
 </style>

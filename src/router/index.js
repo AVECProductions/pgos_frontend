@@ -10,6 +10,7 @@ import GoalsView from '@/views/GoalsView.vue'
 import JournalView from '@/views/JournalView.vue'
 import JournalEntryForm from '@/views/JournalEntryForm.vue'
 import KPITrackerView from '@/views/KPITrackerView.vue'
+import RegisterView from '@/views/RegisterView.vue'
 
 const routes = [
   {
@@ -67,6 +68,11 @@ const routes = [
     name: 'kpi-tracker',
     component: KPITrackerView,
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: RegisterView
   }
 ]
 

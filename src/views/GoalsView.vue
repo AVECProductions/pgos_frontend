@@ -1,18 +1,14 @@
 <template>
   <div>
-    <div class="level">
-      <div class="level-left">
-        <div class="level-item">
-          <h1 class="title">Goals</h1>
-        </div>
-      </div>
-      <div class="level-right">
-        <div class="level-item">
-          <button class="button is-primary" @click="showNewGoalModal = true">
-            Add New Goal
-          </button>
-        </div>
-      </div>
+    <!-- Header with Add Button -->
+    <div class="header-container">
+      <h1 class="title mb-0">Goals</h1>
+      <button class="button" @click="showNewGoalModal = true">
+        <span class="icon">
+          <i class="fas fa-plus"></i>
+        </span>
+        <span>Add New Goal</span>
+      </button>
     </div>
 
     <!-- Active Goals -->
@@ -21,26 +17,18 @@
       <div class="column is-12">
         <h2 class="title is-4">Yearly Goals ({{ currentYear }})</h2>
         <div class="box" v-for="goal in yearlyGoals" :key="goal.id">
-          <div class="level">
-            <div class="level-left">
-              <div class="level-item">
-                <div>
-                  <h3 class="title is-5">{{ goal.life_sector }}</h3>
-                  <p class="subtitle is-6">{{ goal.description }}</p>
-                </div>
-              </div>
+          <div class="goal-container">
+            <div class="goal-info">
+              <h3 class="title is-5 mb-2">{{ goal.life_sector }}</h3>
+              <p class="subtitle is-6 mb-0">{{ goal.description }}</p>
             </div>
-            <div class="level-right">
-              <div class="level-item">
-                <div class="buttons">
-                  <button class="button is-small" @click="editGoal(goal)">
-                    Edit
-                  </button>
-                  <button class="button is-small" @click="viewHistory(goal)">
-                    History
-                  </button>
-                </div>
-              </div>
+            <div class="goal-actions">
+              <button class="button is-small mr-2" @click="editGoal(goal)">
+                Edit
+              </button>
+              <button class="button is-small" @click="viewHistory(goal)">
+                History
+              </button>
             </div>
           </div>
         </div>
@@ -50,29 +38,21 @@
       <div class="column is-12">
         <h2 class="title is-4">Q{{ currentQuarter }} Goals</h2>
         <div class="box" v-for="goal in quarterlyGoals" :key="goal.id">
-          <div class="level">
-            <div class="level-left">
-              <div class="level-item">
-                <div>
-                  <h3 class="title is-5">{{ goal.life_sector }}</h3>
-                  <p class="subtitle is-6">{{ goal.description }}</p>
-                  <p v-if="goal.yearly_goal" class="is-size-7">
-                    Supporting yearly goal: {{ goal.yearly_goal.life_sector }} - {{ goal.yearly_goal.description }}
-                  </p>
-                </div>
-              </div>
+          <div class="goal-container">
+            <div class="goal-info">
+              <h3 class="title is-5 mb-2">{{ goal.life_sector }}</h3>
+              <p class="subtitle is-6 mb-0">{{ goal.description }}</p>
+              <p v-if="goal.yearly_goal" class="is-size-7">
+                Supporting yearly goal: {{ goal.yearly_goal.life_sector }} - {{ goal.yearly_goal.description }}
+              </p>
             </div>
-            <div class="level-right">
-              <div class="level-item">
-                <div class="buttons">
-                  <button class="button is-small" @click="editGoal(goal)">
-                    Edit
-                  </button>
-                  <button class="button is-small" @click="viewHistory(goal)">
-                    History
-                  </button>
-                </div>
-              </div>
+            <div class="goal-actions">
+              <button class="button is-small mr-2" @click="editGoal(goal)">
+                Edit
+              </button>
+              <button class="button is-small" @click="viewHistory(goal)">
+                History
+              </button>
             </div>
           </div>
         </div>
@@ -426,28 +406,56 @@ export default {
 </script>
 
 <style scoped>
-.timeline {
-  margin-top: 1rem;
+/* Header styling */
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
 }
 
-.timeline-item {
-  padding-bottom: 2rem;
-  position: relative;
+/* Goal item styling */
+.goal-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
 }
 
-.timeline-marker {
-  position: absolute;
-  background: #dbdbdb;
-  border: 2px solid #dbdbdb;
-  border-radius: 100%;
-  height: 12px;
-  width: 12px;
-  left: -20px;
-  top: 6px;
+.goal-info {
+  flex: 1;
+  min-width: 0; /* Allows text to wrap properly */
 }
 
-.timeline-content {
-  padding-left: 1rem;
-  border-left: 2px solid #dbdbdb;
+.goal-actions {
+  flex-shrink: 0;
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Ensure consistent spacing */
+.title.is-5 {
+  margin-bottom: 0.5rem !important;
+}
+
+.subtitle.is-6 {
+  margin-bottom: 0 !important;
+}
+
+/* Mobile optimizations */
+@media screen and (max-width: 768px) {
+  .goal-container {
+    flex-wrap: nowrap;
+  }
+
+  .goal-actions {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .button.is-small {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
 }
 </style> 

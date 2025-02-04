@@ -21,17 +21,16 @@
       <div class="navbar-menu" :class="{ 'is-active': showMobileMenu }">
         <div class="navbar-end">
           <template v-if="isAuthenticated">
-            <router-link to="/vision" class="navbar-item" @click="closeMobileMenu">Vision</router-link>
-            <router-link to="/rich" class="navbar-item" @click="closeMobileMenu">RICH</router-link>
-            <router-link to="/goals" class="navbar-item" @click="closeMobileMenu">Goals</router-link>
-            <router-link to="/kpis/track" class="navbar-item" @click="closeMobileMenu">KPIs</router-link>
-            <router-link to="/journal" class="navbar-item" @click="closeMobileMenu">Journal</router-link>
-            <div class="navbar-item has-dropdown is-hoverable">
-              <a class="navbar-link">
+            <router-link to="/vision" class="navbar-item" @click="closeAllMenus">Vision</router-link>
+            <router-link to="/goals" class="navbar-item" @click="closeAllMenus">Goals</router-link>
+            <router-link to="/kpis/track" class="navbar-item" @click="closeAllMenus">KPIs</router-link>
+            <router-link to="/journal" class="navbar-item" @click="closeAllMenus">Journal</router-link>
+            <div class="navbar-item has-dropdown" :class="{ 'is-active': showUserMenu }">
+              <a class="navbar-link" @click="toggleUserMenu">
                 {{ username }}
               </a>
               <div class="navbar-dropdown">
-                <router-link to="/profile" class="navbar-item" @click="closeMobileMenu">Profile</router-link>
+                <router-link to="/profile" class="navbar-item" @click="closeAllMenus">Profile</router-link>
                 <a class="navbar-item" @click="handleLogout">Logout</a>
               </div>
             </div>
@@ -39,18 +38,11 @@
           <template v-else>
             <div class="navbar-item">
               <div class="buttons">
-                <router-link to="/login" class="button is-light">Login</router-link>
-                <router-link to="/register" class="button is-primary">Register</router-link>
+                <router-link to="/login" class="button" @click="closeAllMenus">Login</router-link>
+                <router-link to="/register" class="button" @click="closeAllMenus">Register</router-link>
               </div>
             </div>
           </template>
-          <div class="navbar-item">
-            <button class="button" @click="toggleTheme">
-              <span class="icon">
-                <i :class="isDarkMode ? 'fas fa-sun' : 'fas fa-moon'"></i>
-              </span>
-            </button>
-          </div>
         </div>
       </div>
     </nav>
@@ -63,7 +55,7 @@
 
     <footer class="footer">
       <div class="content has-text-centered">
-        <p>Personal Goal & Objective System (PGOS) - © 2024</p>
+        <p>Personal Growth Operating System (PGOS) - © 2024</p>
       </div>
     </footer>
   </div>
@@ -78,36 +70,33 @@ export default {
   name: 'App',
   setup() {
     const authStore = useAuthStore()
-    const isDarkMode = ref(false)
     const showMobileMenu = ref(false)
+    const showUserMenu = ref(false)
 
     const toggleMobileMenu = () => {
       showMobileMenu.value = !showMobileMenu.value
+      if (showMobileMenu.value === false) {
+        showUserMenu.value = false
+      }
     }
 
-    const closeMobileMenu = () => {
+    const toggleUserMenu = () => {
+      showUserMenu.value = !showUserMenu.value
+    }
+
+    const closeAllMenus = () => {
       showMobileMenu.value = false
+      showUserMenu.value = false
     }
 
     const handleLogout = () => {
-      closeMobileMenu()
+      closeAllMenus()
       authStore.logout()
     }
 
-    const toggleTheme = () => {
-      isDarkMode.value = !isDarkMode.value
-      document.documentElement.setAttribute(
-        'data-theme',
-        isDarkMode.value ? 'dark' : 'light'
-      )
-      localStorage.setItem('theme', isDarkMode.value ? 'dark' : 'light')
-    }
-
     onMounted(() => {
-      // Always set dark theme
-      isDarkMode.value = true
+      // Set dark theme once and forget about it
       document.documentElement.setAttribute('data-theme', 'dark')
-      localStorage.setItem('theme', 'dark')
     })
 
     return {
@@ -115,11 +104,11 @@ export default {
       username: computed(() => authStore.user?.username),
       logout: authStore.logout,
       showMobileMenu,
+      showUserMenu,
       toggleMobileMenu,
-      closeMobileMenu,
-      handleLogout,
-      isDarkMode,
-      toggleTheme
+      toggleUserMenu,
+      closeAllMenus,
+      handleLogout
     }
   }
 }
@@ -166,5 +155,63 @@ export default {
   .navbar-dropdown .navbar-item {
     padding-left: 1.5rem;
   }
+
+  .navbar-item.has-dropdown {
+    padding: 0;
+  }
+
+  .navbar-dropdown {
+    display: none;
+  }
+
+  .navbar-item.has-dropdown.is-active .navbar-dropdown {
+    display: block;
+  }
+
+  .navbar-link::after {
+    display: none !important;  /* Remove the arrow on mobile */
+  }
+
+  .navbar-item.has-dropdown {
+    padding-right: 1rem !important;  /* Reset padding on mobile */
+  }
+}
+
+/* Style the mobile menu burger icon */
+.navbar-burger {
+  color: var(--text) !important;
+}
+
+.navbar-burger span {
+  height: 2px !important;
+  width: 16px !important;
+  left: calc(50% - 8px) !important;
+  background-color: var(--text) !important;
+}
+
+.navbar-burger:hover {
+  background-color: var(--button-background) !important;
+}
+
+/* Adjust the spacing of the lines */
+.navbar-burger span:nth-child(1) {
+  top: calc(50% - 6px) !important;
+}
+
+.navbar-burger span:nth-child(2) {
+  top: calc(50%) !important;
+}
+
+.navbar-burger span:nth-child(3) {
+  top: calc(50% + 6px) !important;
+}
+
+/* Adjust dropdown arrow positioning */
+.navbar-link:not(.is-arrowless)::after {
+  right: 0.75em !important;  /* Move arrow more to the left */
+}
+
+.navbar-item.has-dropdown {
+  padding-right: 2.5em !important;  /* Add more space for the arrow */
 }
 </style>

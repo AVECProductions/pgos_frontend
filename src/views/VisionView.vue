@@ -1,56 +1,32 @@
 <template>
   <div>
-    <h1 class="title">Vision Statements</h1>
-
-    <!-- Header with Add Button -->
-    <div class="level mb-5">
-      <div class="level-left">
-        <div class="level-item">
-          <p class="subtitle">Define your long-term vision and core values</p>
-        </div>
+    <div class="header-container">
+      <div class="header-text">
+        <h1 class="title mb-0">Vision Statements</h1>
+        <p class="subtitle is-6 mt-1">Define your long-term aspirations and core values to guide your journey.</p>
       </div>
-      <div class="level-right">
-        <div class="level-item">
-          <button class="button is-primary" @click="showNewVisionModal = true">
-            Add New Vision
-          </button>
-        </div>
-      </div>
+      <button class="button" @click="showNewVisionModal = true">
+        <span class="icon">
+          <i class="fas fa-plus"></i>
+        </span>
+        <span>Add Vision</span>
+      </button>
     </div>
 
-    <!-- Vision List -->
-    <div class="box">
-      <div v-if="visions.length === 0" class="has-text-centered">
-        <p>No vision statements found. Create one using the button above.</p>
-      </div>
-      <div v-else>
-        <div v-for="vision in visions" :key="vision.id" class="card mb-4">
-          <div class="card-content">
-            <div class="level">
-              <div class="level-left">
-                <div class="level-item">
-                  <div>
-                    <p class="title is-4">{{ vision.title }}</p>
-                    <p class="subtitle is-6">Last updated: {{ formatDate(vision.updated_at) }}</p>
-                  </div>
-                </div>
-              </div>
-              <div class="level-right">
-                <div class="level-item">
-                  <div class="buttons">
-                    <button class="button is-small" @click="editVision(vision)">
-                      Edit
-                    </button>
-                    <button class="button is-small is-danger" @click="confirmDelete(vision)">
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="content">
-              {{ vision.description }}
-            </div>
+    <div class="vision-list">
+      <div class="box" v-for="vision in visions" :key="vision.id">
+        <div class="vision-container">
+          <div class="vision-info">
+            <h3 class="title is-5 mb-2">{{ vision.title }}</h3>
+            <p class="content">{{ vision.description }}</p>
+          </div>
+          <div class="vision-actions">
+            <button class="button is-small mr-2" @click="editVision(vision)">
+              Edit
+            </button>
+            <button class="button is-small" @click="deleteVision(vision)">
+              Delete
+            </button>
           </div>
         </div>
       </div>
@@ -211,15 +187,49 @@ export default {
 </script>
 
 <style scoped>
-.card {
-  transition: all 0.3s ease;
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
 }
 
-.card:hover {
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+.header-text {
+  flex: 1;
 }
 
-.content {
-  white-space: pre-line;
+.subtitle {
+  color: var(--text) !important;
+  opacity: 0.8;
+}
+
+.vision-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.vision-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.vision-actions {
+  flex-shrink: 0;
+  display: flex;
+  gap: 0.5rem;
+}
+
+@media screen and (max-width: 768px) {
+  .vision-container {
+    flex-direction: column;
+  }
+
+  .vision-actions {
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
 }
 </style> 

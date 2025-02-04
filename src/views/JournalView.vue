@@ -1,41 +1,30 @@
 <template>
   <div>
-    <div class="level">
-      <div class="level-left">
-        <div class="level-item">
-          <h1 class="title">Journal Entries</h1>
-        </div>
-      </div>
-      <div class="level-right">
-        <div class="level-item">
-          <router-link to="/journal/new" class="button is-primary">
-            New Entry
-          </router-link>
-        </div>
-      </div>
+    <div class="header-container">
+      <h1 class="title mb-0">Journal</h1>
+      <button class="button" @click="createEntry">
+        <span class="icon">
+          <i class="fas fa-plus"></i>
+        </span>
+        <span>New Entry</span>
+      </button>
     </div>
 
-    <!-- Journal Entries List -->
-    <div class="columns is-multiline">
-      <div v-for="entry in entries" :key="entry.id" class="column is-12">
-        <div class="box">
-          <div class="level">
-            <div class="level-left">
-              <div class="level-item">
-                <h2 class="title is-4">{{ entry.title }}</h2>
-              </div>
-            </div>
-            <div class="level-right">
-              <div class="level-item">
-                <p class="has-text-grey">{{ formatDate(entry.created_at) }}</p>
-              </div>
-            </div>
+    <div class="journal-list">
+      <div class="box" v-for="entry in entries" :key="entry.id">
+        <div class="journal-container">
+          <div class="journal-info">
+            <h3 class="title is-5 mb-2">{{ entry.title }}</h3>
+            <p class="content" v-html="entry.content_html"></p>
+            <p class="is-size-7">{{ formatDate(entry.created_at) }}</p>
           </div>
-          <div class="content" v-html="entry.content_html"></div>
-          <div class="buttons">
-            <router-link :to="`/journal/${entry.id}/edit`" class="button is-small">
+          <div class="journal-actions">
+            <button class="button is-small mr-2" @click="editEntry(entry)">
               Edit
-            </router-link>
+            </button>
+            <button class="button is-small" @click="deleteEntry(entry)">
+              Delete
+            </button>
           </div>
         </div>
       </div>
@@ -88,4 +77,43 @@ export default {
     }
   }
 }
-</script> 
+</script>
+
+<style scoped>
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.journal-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.journal-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.journal-actions {
+  flex-shrink: 0;
+  display: flex;
+  gap: 0.5rem;
+}
+
+@media screen and (max-width: 768px) {
+  .journal-container {
+    flex-direction: column;
+  }
+
+  .journal-actions {
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+}
+</style> 

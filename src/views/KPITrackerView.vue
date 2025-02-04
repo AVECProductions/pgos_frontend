@@ -1,22 +1,14 @@
 <template>
   <div>
     <!-- Header with Add Button -->
-    <div class="level mb-4">
-      <div class="level-left">
-        <div class="level-item">
-          <h1 class="title mb-0">KPI Tracker</h1>
-        </div>
-      </div>
-      <div class="level-right">
-        <div class="level-item">
-          <button class="button" @click="showNewKPIModal = true">
-            <span class="icon">
-              <i class="fas fa-plus"></i>
-            </span>
-            <span>Add New KPI</span>
-          </button>
-        </div>
-      </div>
+    <div class="header-container">
+      <h1 class="title mb-0">KPI Tracker</h1>
+      <button class="button" @click="showNewKPIModal = true">
+        <span class="icon">
+          <i class="fas fa-plus"></i>
+        </span>
+        <span>Add New KPI</span>
+      </button>
     </div>
 
     <!-- Date Navigation -->
@@ -54,49 +46,37 @@
       <div v-if="kpis.length === 0" class="has-text-centered">
         <p>No KPIs found. Create one using the button above.</p>
       </div>
-      <table v-else class="table is-fullwidth">
-        <thead>
-          <tr>
-            <th>KPI</th>
-            <th>Target</th>
-            <th>Achieved?</th>
-            <th>Notes</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="kpi in kpis" :key="kpi.id">
-            <td>
-              <strong>{{ kpi.name }}</strong>
-              <p class="is-size-7">{{ kpi.description }}</p>
-            </td>
-            <td>{{ kpi.target_value }} {{ kpi.unit }}</td>
-            <td>
+      <div v-else>
+        <div class="kpi-item" v-for="kpi in kpis" :key="kpi.id">
+          <div class="kpi-info">
+            <strong>{{ kpi.name }}</strong>
+            <p class="is-size-7">{{ kpi.description }}</p>
+            <div class="kpi-details">
+              <span>{{ kpi.target_value }} {{ kpi.unit }}</span>
               <label class="checkbox">
                 <input 
                   type="checkbox" 
                   :checked="isKPIAchieved(kpi)"
                   @change="toggleKPIAchievement(kpi)"
                 >
+                Achieved
               </label>
-            </td>
-            <td>
-              <input 
-                class="input is-small"
-                type="text"
-                v-model="kpiNotes[kpi.id]"
-                @change="saveKPIRecord(kpi)"
-                placeholder="Add notes..."
-              >
-            </td>
-            <td>
-              <button class="button is-small" @click="editKPI(kpi)">
-                Edit
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            </div>
+          </div>
+          <div class="kpi-actions">
+            <input 
+              class="input is-small mb-2"
+              type="text"
+              v-model="kpiNotes[kpi.id]"
+              @change="saveKPIRecord(kpi)"
+              placeholder="Add notes..."
+            >
+            <button class="button is-small" @click="editKPI(kpi)">
+              Edit
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- New KPI Modal -->
@@ -364,6 +344,61 @@ export default {
 </script>
 
 <style scoped>
+/* Header styling */
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+/* KPI item styling */
+.kpi-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.kpi-item:last-child {
+  border-bottom: none;
+}
+
+.kpi-info {
+  flex: 1;
+}
+
+.kpi-details {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.kpi-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+@media screen and (min-width: 769px) {
+  .kpi-item {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .kpi-actions {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .kpi-actions .input {
+    margin-bottom: 0 !important;
+    margin-right: 0.5rem;
+  }
+}
+
 .level {
   margin-bottom: 1.5rem !important;
 }
