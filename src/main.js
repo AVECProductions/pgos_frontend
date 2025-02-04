@@ -7,7 +7,9 @@ import axios from 'axios'
 console.log('Initializing Vue app...')
 
 // Configure axios defaults
-axios.defaults.baseURL = 'http://localhost:8000'  // your Django backend URL
+axios.defaults.baseURL = process.env.NODE_ENV === 'production' 
+  ? 'https://your-railway-backend-url.railway.app'  // Replace with your Railway URL
+  : 'http://localhost:8000'
 
 // Add request interceptor
 axios.interceptors.request.use(
