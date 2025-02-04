@@ -44,6 +44,13 @@
               </div>
             </div>
           </form>
+
+          <div class="has-text-centered mt-4">
+            <p>
+              Don't have an account? 
+              <router-link to="/register" class="has-text-primary">Register</router-link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
