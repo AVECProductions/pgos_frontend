@@ -130,6 +130,7 @@ export default {
 .footer {
   margin-top: auto;
   padding: 2rem 1.5rem;
+  font-size: 0.8rem;
 }
 
 /* Smooth transitions for theme switching */
