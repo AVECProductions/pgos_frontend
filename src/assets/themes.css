@@ -1,0 +1,203 @@
+/* Light Theme (default) */
+:root {
+  --background: #f5f5f5;
+  --card-background: #ffffff;
+  --text: #4a4a4a;
+  --text-strong: #363636;
+  --link: #485fc7;
+  --link-hover: #3850b7;
+  --border: #dbdbdb;
+  --shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --background: #121212;  /* Darker background */
+  --card-background: #1e1e1e;  /* Darker card background */
+  --text: #ffffff;  /* White text */
+  --text-strong: #ffffff;  /* White strong text */
+  --link: #7289da;  /* Discord-like blue for links */
+  --link-hover: #8ea1e1;
+  --border: #333333;  /* Darker borders */
+  --shadow: rgba(255, 255, 255, 0.1);
+  --button-background: #333333;  /* Gray buttons */
+  --button-text: #ffffff;  /* White button text */
+  --navbar-background: #1e1e1e;  /* Dark navbar */
+  --footer-background: #1e1e1e;  /* Dark footer */
+  --stat-card-1: #1a4a4a;  /* Darker stat cards */
+  --stat-card-2: #1a3a5a;
+  --stat-card-3: #1a4a3a;
+  --stat-card-4: #4a3a1a;
+}
+
+/* Apply theme variables */
+body {
+  background-color: var(--background) !important;
+  color: var(--text) !important;
+}
+
+.navbar {
+  background-color: var(--navbar-background) !important;
+}
+
+.navbar-item, .navbar-link {
+  color: var(--text) !important;
+  background-color: transparent !important;
+}
+
+.navbar-dropdown {
+  background-color: var(--navbar-background) !important;
+  border-color: var(--border) !important;
+}
+
+.footer {
+  background-color: var(--footer-background) !important;
+  color: var(--text) !important;
+}
+
+.card, .box, .modal-card {
+  background-color: var(--card-background) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.title, .subtitle, .label {
+  color: var(--text-strong) !important;
+}
+
+.input, .textarea, .select select {
+  background-color: var(--card-background) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+
+.input:focus, .textarea:focus, .select select:focus {
+  border-color: var(--link) !important;
+}
+
+.button {
+  background-color: var(--button-background) !important;
+  border-color: var(--border) !important;
+  color: var(--button-text) !important;
+}
+
+.button.is-primary {
+  background-color: var(--link) !important;
+  color: var(--text-strong) !important;
+}
+
+.button.is-primary:hover {
+  background-color: var(--link-hover) !important;
+}
+
+.modal-card-head, .modal-card-foot {
+  background-color: var(--card-background) !important;
+  border-color: var(--border) !important;
+}
+
+.table {
+  background-color: var(--card-background) !important;
+  color: var(--text) !important;
+}
+
+.table th {
+  color: var(--text-strong) !important;
+}
+
+.tag {
+  background-color: var(--button-background) !important;
+  color: var(--text) !important;
+}
+
+/* Dashboard stat cards */
+.box.has-background-primary {
+  background-color: var(--stat-card-1) !important;
+}
+
+.box.has-background-info {
+  background-color: var(--stat-card-2) !important;
+}
+
+.box.has-background-success {
+  background-color: var(--stat-card-3) !important;
+}
+
+.box.has-background-warning {
+  background-color: var(--stat-card-4) !important;
+}
+
+/* Force dark theme */
+:root {
+  color-scheme: dark;
+}
+
+/* Add !important to override Bulma's default styles */
+.modal-background {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+.dropdown-content {
+  background-color: var(--card-background) !important;
+  border-color: var(--border) !important;
+}
+
+.dropdown-item {
+  color: var(--text) !important;
+}
+
+.dropdown-item:hover {
+  background-color: var(--button-background) !important;
+  color: var(--text) !important;
+}
+
+/* Add these styles to handle the dashboard, KPI, and journal buttons */
+
+/* Dashboard Quick Action buttons */
+.button.is-info {
+  background-color: var(--button-background) !important;
+  color: var(--text) !important;
+}
+
+.button.is-success {
+  background-color: var(--button-background) !important;
+  color: var(--text) !important;
+}
+
+.button.is-warning {
+  background-color: var(--button-background) !important;
+  color: var(--text) !important;
+}
+
+/* Dashboard stat cards - make them more subtle */
+.box.has-background-primary,
+.box.has-background-info,
+.box.has-background-success,
+.box.has-background-warning {
+  background-color: var(--card-background) !important;
+  border: 1px solid var(--border) !important;
+}
+
+/* Quick Actions buttons */
+.button.is-link,
+.button.is-success,
+.button.is-info,
+.button.is-warning {
+  background-color: var(--button-background) !important;
+  border-color: var(--border) !important;
+  color: var(--text) !important;
+}
+
+.button.is-link:hover,
+.button.is-success:hover,
+.button.is-info:hover,
+.button.is-warning:hover {
+  background-color: var(--button-background) !important;
+  filter: brightness(1.1);
+}
+
+/* Override any remaining colored buttons */
+.button[class*="is-"] {
+  background-color: var(--button-background) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+} 
