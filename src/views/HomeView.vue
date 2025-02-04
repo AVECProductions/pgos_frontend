@@ -1,11 +1,19 @@
 <template>
-  <div class="home-container">
-    <div class="welcome-box">
-      <h1 class="title is-2 mb-4">Welcome to PGOS</h1>
-      <p class="subtitle is-5 mb-5">Personal Growth Operating System</p>
-      <div class="buttons is-centered">
-        <router-link to="/login" class="button mr-2">Login</router-link>
-        <router-link to="/register" class="button">Register</router-link>
+  <div>
+    <!-- Show Dashboard for authenticated users -->
+    <div v-if="isAuthenticated">
+      <DashboardView />
+    </div>
+
+    <!-- Show Welcome page for unauthenticated users -->
+    <div v-else class="home-container">
+      <div class="welcome-box">
+        <h1 class="title is-2 mb-4">Welcome to PGOS</h1>
+        <p class="subtitle is-5 mb-5">Personal Growth Operating System</p>
+        <div class="buttons is-centered">
+          <router-link to="/login" class="button mr-2">Login</router-link>
+          <router-link to="/register" class="button">Register</router-link>
+        </div>
       </div>
     </div>
   </div>

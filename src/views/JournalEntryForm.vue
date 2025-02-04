@@ -1,173 +1,195 @@
 <template>
   <div>
-    <h1 class="title">{{ isEditing ? 'Edit Entry' : 'New Journal Entry' }}</h1>
+    <div class="header-container">
+      <h1 class="title mb-0">{{ currentDateTime }}</h1>
+    </div>
 
-    <form @submit.prevent="handleSubmit">
-      <div class="field">
-        <label class="label">Title</label>
-        <div class="control">
-          <input 
-            class="input" 
-            type="text" 
-            v-model="form.title"
-            required
-            :class="{ 'is-danger': errors.title }"
-          >
-        </div>
-        <p class="help is-danger" v-if="errors.title">{{ errors.title }}</p>
-      </div>
-
-      <div class="field">
-        <label class="label">Content</label>
-        <div class="control">
-          <editor-content 
-            class="content-editor"
-            :editor="editor"
+    <div class="box">
+      <form @submit.prevent="handleSubmit">
+        <div class="field">
+          <QuillEditor
+            v-model:content="form.content_html"
+            contentType="html"
+            theme="snow"
+            toolbar="full"
+            :options="editorOptions"
+            @ready="onEditorReady"
           />
         </div>
-        <p class="help is-danger" v-if="errors.content_html">{{ errors.content_html }}</p>
-      </div>
 
-      <div class="field is-grouped">
-        <div class="control">
-          <button 
-            class="button is-primary"
-            :class="{ 'is-loading': loading }"
-            type="submit"
-          >
-            {{ isEditing ? 'Update' : 'Create' }} Entry
-          </button>
+        <div class="field is-grouped mt-5">
+          <div class="control">
+            <button 
+              class="button is-primary" 
+              type="submit"
+              :class="{ 'is-loading': loading }"
+            >
+              {{ isEditing ? 'Update' : 'Create' }}
+            </button>
+          </div>
+          <div class="control">
+            <button 
+              class="button" 
+              type="button" 
+              @click="router.push('/journal')"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
-        <div class="control">
-          <router-link to="/journal" class="button is-light">
-            Cancel
-          </router-link>
-        </div>
-      </div>
-    </form>
+      </form>
+    </div>
   </div>
 </template>
 
 <script>
-import { ref, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
-import { Editor, EditorContent } from '@tiptap/vue-3'
-import StarterKit from '@tiptap/starter-kit'
-import Document from '@tiptap/extension-document'
-import Paragraph from '@tiptap/extension-paragraph'
-import Text from '@tiptap/extension-text'
-import Bold from '@tiptap/extension-bold'
-import Italic from '@tiptap/extension-italic'
-import BulletList from '@tiptap/extension-bullet-list'
-import OrderedList from '@tiptap/extension-ordered-list'
-import ListItem from '@tiptap/extension-list-item'
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css'
 
 export default {
   name: 'JournalEntryForm',
   components: {
-    EditorContent,
+    QuillEditor
   },
   setup() {
     const router = useRouter()
     const route = useRoute()
     const loading = ref(false)
-    const errors = ref({})
     const form = ref({
-      title: '',
       content_html: ''
     })
 
-    const editor = new Editor({
-      extensions: [
-        StarterKit,
-        Document,
-        Paragraph,
-        Text,
-        Bold,
-        Italic,
-        BulletList,
-        OrderedList,
-        ListItem,
-      ],
-      content: '',
-      onUpdate: ({ editor }) => {
-        form.value.content_html = editor.getHTML()
-      }
+    const currentDateTime = computed(() => {
+      return new Date().toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      })
     })
 
-    const isEditing = route.params.id !== undefined
+    const editorOptions = {
+      modules: {
+        toolbar: [
+          ['bold', 'italic', 'underline', 'strike'],
+          ['blockquote', 'code-block'],
+          [{ 'header': 1 }, { 'header': 2 }],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          [{ 'script': 'sub'}, { 'script': 'super' }],
+          [{ 'indent': '-1'}, { 'indent': '+1' }],
+          [{ 'size': ['small', false, 'large', 'huge'] }],
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'align': [] }],
+          ['clean'],
+          ['link']
+        ]
+      },
+      placeholder: 'Write your thoughts...',
+      theme: 'snow'
+    }
 
-    const fetchEntry = async () => {
-      if (isEditing) {
-        try {
-          const response = await axios.get(`/api/journal/${route.params.id}/`)
-          form.value = response.data
-          editor.commands.setContent(response.data.content_html)
-        } catch (error) {
-          console.error('Error fetching journal entry:', error)
-        }
+    const isEditing = computed(() => route.params.id !== undefined)
+
+    const fetchEntry = async (id) => {
+      try {
+        const response = await axios.get(`/api/journal/${id}/`)
+        form.value = response.data
+      } catch (error) {
+        console.error('Error fetching entry:', error)
       }
     }
 
     const handleSubmit = async () => {
       loading.value = true
-      errors.value = {}
-
       try {
-        const method = isEditing ? 'put' : 'post'
-        const url = isEditing ? `/api/journal/${route.params.id}/` : '/api/journal/'
-        await axios[method](url, form.value)
+        if (isEditing.value) {
+          await axios.put(`/api/journal/${route.params.id}/`, form.value)
+        } else {
+          await axios.post('/api/journal/', form.value)
+        }
         router.push('/journal')
       } catch (error) {
-        if (error.response?.data) {
-          errors.value = error.response.data
-        }
+        console.error('Error saving entry:', error)
       } finally {
         loading.value = false
       }
     }
 
-    fetchEntry()
+    const onEditorReady = (quill) => {
+      // The editor is ready
+      console.log('Editor ready!', quill)
+    }
 
-    onBeforeUnmount(() => {
-      editor.destroy()
+    onMounted(() => {
+      if (isEditing.value) {
+        fetchEntry(route.params.id)
+      }
     })
 
     return {
       form,
       loading,
-      errors,
-      editor,
+      handleSubmit,
       isEditing,
-      handleSubmit
+      router,
+      editorOptions,
+      onEditorReady,
+      currentDateTime
     }
   }
 }
 </script>
 
-<style>
-.content-editor {
-  border: 1px solid #dbdbdb;
-  border-radius: 4px;
-  padding: 1rem;
-  min-height: 300px;
+<style scoped>
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
 }
 
-.content-editor:focus-within {
-  border-color: #3273dc;
+:deep(.ql-editor.ql-blank::before) {
+  color: var(--text) !important;
+  opacity: 0.6;
 }
 
-.ProseMirror {
-  outline: none;
+:deep(.ql-editor) {
+  min-height: 200px;
+  background-color: var(--card-background);
+  color: var(--text);
+  font-size: 1.1rem;
+  line-height: 1.6;
 }
 
-.ProseMirror > * + * {
-  margin-top: 0.75em;
+:deep(.ql-toolbar) {
+  background-color: var(--card-background);
+  border-color: var(--border) !important;
 }
 
-.ProseMirror ul,
-.ProseMirror ol {
-  padding: 0 1rem;
+:deep(.ql-container) {
+  border-color: var(--border) !important;
+}
+
+:deep(.ql-stroke) {
+  stroke: var(--text) !important;
+}
+
+:deep(.ql-fill) {
+  fill: var(--text) !important;
+}
+
+:deep(.ql-picker) {
+  color: var(--text) !important;
+}
+
+:deep(.ql-picker-options) {
+  background-color: var(--card-background) !important;
+  color: var(--text) !important;
 }
 </style> 

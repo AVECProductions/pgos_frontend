@@ -14,9 +14,8 @@
       <div class="box" v-for="entry in entries" :key="entry.id">
         <div class="journal-container">
           <div class="journal-info">
-            <h3 class="title is-5 mb-2">{{ entry.title }}</h3>
+            <h3 class="title is-5 mb-2">{{ formatDate(entry.created_at) }}</h3>
             <p class="content" v-html="entry.content_html"></p>
-            <p class="is-size-7">{{ formatDate(entry.created_at) }}</p>
           </div>
           <div class="journal-actions">
             <button class="button is-small mr-2" @click="editEntry(entry)">
@@ -42,12 +41,33 @@
 
 <script>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import axios from 'axios'
 
 export default {
   name: 'JournalView',
   setup() {
+    const router = useRouter()
     const entries = ref([])
+
+    const createEntry = () => {
+      router.push('/journal/new')
+    }
+
+    const editEntry = (entry) => {
+      router.push(`/journal/${entry.id}/edit`)
+    }
+
+    const deleteEntry = async (entry) => {
+      if (confirm('Are you sure you want to delete this entry?')) {
+        try {
+          await axios.delete(`/api/journal/${entry.id}/`)
+          await fetchEntries()
+        } catch (error) {
+          console.error('Error deleting entry:', error)
+        }
+      }
+    }
 
     const fetchEntries = async () => {
       try {
@@ -73,7 +93,10 @@ export default {
 
     return {
       entries,
-      formatDate
+      formatDate,
+      createEntry,
+      editEntry,
+      deleteEntry
     }
   }
 }

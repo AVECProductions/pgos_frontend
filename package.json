@@ -17,6 +17,7 @@
     "@tiptap/extension-text": "^2.11.5",
     "@tiptap/starter-kit": "^2.11.5",
     "@tiptap/vue-3": "^2.11.5",
+    "@vueup/vue-quill": "^1.2.0",
     "axios": "^1.7.9",
     "bulma": "^1.0.3",
     "core-js": "^3.8.3",
