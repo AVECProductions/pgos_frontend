@@ -6,6 +6,12 @@
       input-mode="voice"
       enable-voice-input="true"
       enable-voice-output="true"
+      audio-quality="high"
+      buffer-size="2048"
+      sample-rate="44100"
+      latency-hint="interactive"
+      stream-optimized="true"
+      mobile-optimized="true"
     ></elevenlabs-convai>
   </div>
 </template>
@@ -18,18 +24,49 @@ export default {
     const script = document.createElement('script')
     script.src = 'https://elevenlabs.io/convai-widget/index.js'
     script.async = true
+    script.crossOrigin = 'anonymous'
     document.head.appendChild(script)
+
+    // Configure audio context for better performance
+    const initAudioContext = () => {
+      try {
+        window.AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioContext = new AudioContext({
+          latencyHint: 'interactive',
+          sampleRate: 44100,
+        });
+        
+        // Optimize audio processing
+        if (audioContext.audioWorklet) {
+          audioContext.audioWorklet.addModule('path/to/worklet.js').catch(console.error);
+        }
+      } catch (e) {
+        console.error('Audio Context initialization failed:', e);
+      }
+    };
 
     // Wait for the widget to be loaded
     script.onload = () => {
+      initAudioContext();
       this.setupWidgetObserver()
     }
   },
   methods: {
     async requestMicrophonePermission() {
       try {
-        await navigator.mediaDevices.getUserMedia({ audio: true })
-        console.log('Microphone permission granted')
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+            channelCount: 1,
+            sampleRate: 44100,
+            sampleSize: 16,
+          } 
+        });
+        console.log('Microphone permission granted');
+        // Keep the stream active
+        window.audioStream = stream;
       } catch (err) {
         console.error('Error accessing microphone:', err)
       }
@@ -71,4 +108,13 @@ export default {
 
 <style scoped>
 /* Add any custom styling for the widget container here */
+/* Optimize mobile performance */
+@media (max-width: 768px) {
+  .convai-widget {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+}
 </style> 
