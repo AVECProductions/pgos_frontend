@@ -58,6 +58,9 @@
         <p>Personal Growth Operating System (PGOS) - © 2024</p>
       </div>
     </footer>
+
+    <!-- Add the floating helper -->
+    <FloatingAIHelper />
   </div>
 </template>
 
@@ -65,9 +68,13 @@
 import { useAuthStore } from '@/stores/auth'
 import { computed, ref, onMounted } from 'vue'
 import '@/assets/themes.css'
+import FloatingAIHelper from '@/components/FloatingAIHelper.vue'
 
 export default {
   name: 'App',
+  components: {
+    FloatingAIHelper
+  },
   setup() {
     const authStore = useAuthStore()
     const showMobileMenu = ref(false)

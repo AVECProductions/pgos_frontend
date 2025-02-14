@@ -30,34 +30,41 @@
       </div>
     </div>
 
-    <!-- Recent Activity -->
     <div class="dashboard-grid">
-      <div class="recent-activity box">
-        <h2 class="subtitle">Recent Activity</h2>
-        <div class="activity-list">
-          <div v-for="activity in recentActivity" :key="activity.id" class="activity-item">
-            <span class="activity-dot"></span>
-            <div class="activity-content">
-              <div class="activity-date">{{ formatDate(activity.date) }}</div>
-              <div class="activity-description">{{ activity.description }}</div>
+      <!-- First row -->
+      <div class="columns is-multiline">
+        <!-- Recent Activity -->
+        <div class="column is-8">
+          <div class="recent-activity box">
+            <h2 class="subtitle">Recent Activity</h2>
+            <div class="activity-list">
+              <div v-for="activity in recentActivity" :key="activity.id" class="activity-item">
+                <span class="activity-dot"></span>
+                <div class="activity-content">
+                  <div class="activity-date">{{ formatDate(activity.date) }}</div>
+                  <div class="activity-description">{{ activity.description }}</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Quick Actions -->
-      <div class="quick-actions box">
-        <h2 class="subtitle">Quick Actions</h2>
-        <div class="actions-list">
-          <router-link to="/goals/new" class="button is-fullwidth">
-            Add New Goal
-          </router-link>
-          <router-link to="/journal/new" class="button is-fullwidth">
-            Write Journal Entry
-          </router-link>
-          <router-link to="/kpis" class="button is-fullwidth">
-            Track KPIs
-          </router-link>
+        <!-- Quick Actions -->
+        <div class="column is-4">
+          <div class="quick-actions box">
+            <h2 class="subtitle">Quick Actions</h2>
+            <div class="actions-list">
+              <router-link to="/goals/new" class="button is-fullwidth">
+                Add New Goal
+              </router-link>
+              <router-link to="/journal/new" class="button is-fullwidth">
+                Write Journal Entry
+              </router-link>
+              <router-link to="/kpis" class="button is-fullwidth">
+                Track KPIs
+              </router-link>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -107,17 +114,14 @@ export default {
 
 <style scoped>
 .dashboard-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 1.5rem;
   margin-top: 1.5rem;
 }
 
 .recent-activity,
 .quick-actions {
+  height: 300px;
   display: flex;
   flex-direction: column;
-  height: 300px;  /* Fixed height for both sections */
 }
 
 .activity-list {
@@ -187,10 +191,11 @@ export default {
   border-radius: 3px;
 }
 
-/* Mobile responsiveness */
+/* Add responsive styling */
 @media screen and (max-width: 768px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
+  .column.is-8,
+  .column.is-4 {
+    width: 100%;
   }
 }
 </style> 
