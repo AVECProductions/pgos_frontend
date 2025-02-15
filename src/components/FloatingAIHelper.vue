@@ -6,12 +6,17 @@
       input-mode="voice"
       enable-voice-input="true"
       enable-voice-output="true"
-      audio-quality="high"
+      audio-quality="medium"
       stream-optimized="true"
       mobile-optimized="true"
       playback-rate="1.0"
-      buffer-size="4096"
-      sample-rate="48000"
+      buffer-size="8192"
+      sample-rate="22050"
+      latency="0.5"
+      voice-chunk-size="1024"
+      output-format="mp3"
+      compression="true"
+      mono="true"
     ></elevenlabs-convai>
   </div>
 </template>
@@ -30,10 +35,12 @@ export default {
     // Detect iOS
     this.isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     
-    // Load ElevenLabs script
+    // Load ElevenLabs script with priority
     const script = document.createElement('script')
     script.src = 'https://elevenlabs.io/convai-widget/index.js'
     script.async = true
+    script.defer = false
+    script.setAttribute('importance', 'high')
     document.head.appendChild(script)
 
     // Wait for the widget to be loaded
@@ -51,47 +58,68 @@ export default {
   },
   methods: {
     setupIOSAudioContext() {
-      // Initialize audio context with iOS-optimized settings
-      const AudioContext = window.AudioContext || window.webkitAudioContext
-      this.audioContext = new AudioContext({
-        sampleRate: 48000,
-        latencyHint: 'interactive',
-        bufferSize: 4096
-      })
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext
+        this.audioContext = new AudioContext({
+          // Lower sample rate for better performance
+          sampleRate: 22050,
+          latencyHint: 'playback',
+          // Increased buffer size to prevent choppy audio
+          bufferSize: 8192
+        })
 
-      // Create and configure audio nodes for iOS
-      const masterGain = this.audioContext.createGain()
-      masterGain.gain.value = 1.0
-      masterGain.connect(this.audioContext.destination)
+        // Simplified audio processing chain
+        const masterGain = this.audioContext.createGain()
+        masterGain.gain.value = 0.9 // Slightly reduced volume
+        masterGain.connect(this.audioContext.destination)
+
+        // Add a compressor to smooth out audio
+        const compressor = this.audioContext.createDynamicsCompressor()
+        compressor.threshold.value = -24
+        compressor.knee.value = 30
+        compressor.ratio.value = 12
+        compressor.attack.value = 0.003
+        compressor.release.value = 0.25
+        compressor.connect(masterGain)
+
+        this.masterGain = masterGain
+        this.compressor = compressor
+      } catch (e) {
+        console.error('Audio Context Setup Error:', e)
+      }
     },
 
     setupIOSAudioUnlock() {
-      // iOS requires user interaction to start audio context
-      document.addEventListener('touchstart', () => {
+      const unlockAudio = () => {
         if (this.audioContext && this.audioContext.state !== 'running') {
           this.audioContext.resume()
         }
-      }, { once: true })
+        document.body.removeEventListener('touchstart', unlockAudio)
+        document.body.removeEventListener('touchend', unlockAudio)
+      }
+
+      document.body.addEventListener('touchstart', unlockAudio)
+      document.body.addEventListener('touchend', unlockAudio)
     },
 
     async requestMicrophonePermission() {
       try {
-        // iOS-optimized audio constraints
         const constraints = {
           audio: {
-            echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true,
-            sampleRate: 48000,
-            sampleSize: 24,
-            channelCount: 1,
-            latency: 0,
+            echoCancellation: { ideal: true },
+            noiseSuppression: { ideal: true },
+            autoGainControl: { ideal: true },
+            // Reduced quality for better performance
+            sampleRate: { ideal: 22050 },
+            sampleSize: { ideal: 16 },
+            channelCount: { ideal: 1 },
+            latency: { ideal: 0.5 },
+            // Mobile specific
             ...(this.isIOS ? {
-              // iOS-specific constraints
-              googEchoCancellation: true,
-              googAutoGainControl: true,
-              googNoiseSuppression: true,
-              googHighpassFilter: true
+              googEchoCancellation: { ideal: true },
+              googAutoGainControl: { ideal: true },
+              googNoiseSuppression: { ideal: true },
+              googHighpassFilter: { ideal: true }
             } : {})
           }
         }
@@ -100,21 +128,13 @@ export default {
         this.audioStream = stream
 
         if (this.isIOS && this.audioContext) {
-          // Connect the stream to the audio context
           const source = this.audioContext.createMediaStreamSource(stream)
-          const processor = this.audioContext.createScriptProcessor(4096, 1, 1)
-          
-          source.connect(processor)
-          processor.connect(this.audioContext.destination)
-          
-          // Keep references to prevent garbage collection
-          this.source = source
-          this.processor = processor
+          source.connect(this.compressor)
         }
 
-        console.log('Microphone permission granted and audio setup complete')
+        console.log('Audio setup complete')
       } catch (err) {
-        console.error('Error accessing microphone:', err)
+        console.error('Microphone Error:', err)
       }
     },
 
@@ -169,25 +189,17 @@ export default {
 <style scoped>
 .convai-widget {
   z-index: 1000;
-  /* Optimize rendering on iOS */
-  -webkit-transform: translateZ(0);
-  -webkit-backface-visibility: hidden;
-  -webkit-perspective: 1000;
+  /* Optimize rendering */
+  -webkit-transform: translate3d(0,0,0);
+  transform: translate3d(0,0,0);
 }
 
-/* iOS-specific optimizations */
-@supports (-webkit-touch-callout: none) {
-  .convai-widget {
-    /* Prevent Safari rubber-banding */
-    overscroll-behavior: none;
-    -webkit-overflow-scrolling: touch;
-  }
-}
-
+/* Mobile optimizations */
 @media (max-width: 768px) {
   .convai-widget {
     will-change: transform;
-    transform: translateZ(0);
+    -webkit-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
   }
 }
 </style> 
