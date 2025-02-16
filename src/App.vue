@@ -25,6 +25,15 @@
             <router-link to="/goals" class="navbar-item" @click="closeAllMenus">Goals</router-link>
             <router-link to="/kpis/track" class="navbar-item" @click="closeAllMenus">KPIs</router-link>
             <router-link to="/journal" class="navbar-item" @click="closeAllMenus">Journal</router-link>
+            <div class="navbar-item has-dropdown" :class="{ 'is-active': showRecipeMenu }">
+              <a class="navbar-link" @click="toggleRecipeMenu">
+                Recipes
+              </a>
+              <div class="navbar-dropdown">
+                <router-link to="/recipes" class="navbar-item" @click="closeAllMenus">My Recipes</router-link>
+                <router-link to="/recipes/import" class="navbar-item" @click="closeAllMenus">Import Recipe</router-link>
+              </div>
+            </div>
             <div class="navbar-item has-dropdown" :class="{ 'is-active': showUserMenu }">
               <a class="navbar-link" @click="toggleUserMenu">
                 {{ username }}
@@ -58,9 +67,6 @@
         <p>Personal Growth Operating System (PGOS) - © 2024</p>
       </div>
     </footer>
-
-    <!-- Add the floating helper -->
-    <FloatingAIHelper />
   </div>
 </template>
 
@@ -68,22 +74,20 @@
 import { useAuthStore } from '@/stores/auth'
 import { computed, ref, onMounted } from 'vue'
 import '@/assets/themes.css'
-import FloatingAIHelper from '@/components/FloatingAIHelper.vue'
 
 export default {
   name: 'App',
-  components: {
-    FloatingAIHelper
-  },
   setup() {
     const authStore = useAuthStore()
     const showMobileMenu = ref(false)
     const showUserMenu = ref(false)
+    const showRecipeMenu = ref(false)
 
     const toggleMobileMenu = () => {
       showMobileMenu.value = !showMobileMenu.value
       if (showMobileMenu.value === false) {
         showUserMenu.value = false
+        showRecipeMenu.value = false
       }
     }
 
@@ -91,9 +95,14 @@ export default {
       showUserMenu.value = !showUserMenu.value
     }
 
+    const toggleRecipeMenu = () => {
+      showRecipeMenu.value = !showRecipeMenu.value
+    }
+
     const closeAllMenus = () => {
       showMobileMenu.value = false
       showUserMenu.value = false
+      showRecipeMenu.value = false
     }
 
     const handleLogout = () => {
@@ -112,8 +121,10 @@ export default {
       logout: authStore.logout,
       showMobileMenu,
       showUserMenu,
+      showRecipeMenu,
       toggleMobileMenu,
       toggleUserMenu,
+      toggleRecipeMenu,
       closeAllMenus,
       handleLogout
     }

@@ -12,6 +12,9 @@ import JournalEntryForm from '@/views/JournalEntryForm.vue'
 import KPITrackerView from '@/views/KPITrackerView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import ManageKPIsView from '@/views/ManageKPIsView.vue'
+import RecipeImport from '@/components/recipes/RecipeImport.vue'
+import MyRecipes from '@/components/recipes/MyRecipes.vue'
+import RecipeDetail from '@/components/recipes/RecipeDetail.vue'
 
 const routes = [
   {
@@ -80,6 +83,24 @@ const routes = [
     path: '/register',
     name: 'register',
     component: RegisterView
+  },
+  {
+    path: '/recipes',
+    name: 'recipes',
+    component: MyRecipes,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/recipes/import',
+    name: 'recipe-import',
+    component: RecipeImport,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/recipes/:id',
+    name: 'recipe-detail',
+    component: RecipeDetail,
+    meta: { requiresAuth: true }
   }
 ]
 
